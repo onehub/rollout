@@ -89,7 +89,11 @@ class Rollout
       percentage = percentage(feature)
       return false if percentage.nil?
 
-      (integer_hash(user.id) + integer_hash(feature)) % 100 < percentage.to_i
+      combined_hash(user.id, feature) % 100 < percentage.to_i
+    end
+
+    def combined_hash(*objects)
+      objects.inject(0) { |m,o| m + integer_hash(o) }
     end
 
     def integer_hash(obj)
