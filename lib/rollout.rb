@@ -89,6 +89,17 @@ class Rollout
       percentage = percentage(feature)
       return false if percentage.nil?
 
-      (user.id.hash + feature.hash) % 100 < percentage.to_i
+      (integer_hash(user.id) + integer_hash(feature)) % 100 < percentage.to_i
+    end
+
+    def integer_hash(obj)
+      str = obj.to_s
+
+      hash = Digest::SHA1.hexdigest(str)
+
+      # only take 20 digits
+      hash = hash[0..19]
+
+      hash.to_i(16)
     end
 end
