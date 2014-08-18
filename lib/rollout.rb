@@ -1,3 +1,5 @@
+require 'zlib'
+
 class Rollout
   
   attr_accessor :redis, :groups
@@ -97,13 +99,6 @@ class Rollout
     end
 
     def integer_hash(obj)
-      str = obj.to_s
-
-      hash = Digest::SHA1.hexdigest(str)
-
-      # only take 20 digits
-      hash = hash[0..19]
-
-      hash.to_i(16)
+      Zlib.crc32 obj.to_s
     end
 end
