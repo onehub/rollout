@@ -1,3 +1,5 @@
+require 'zlib'
+
 class Rollout
   
   attr_accessor :redis, :groups
@@ -89,6 +91,14 @@ class Rollout
       percentage = percentage(feature)
       return false if percentage.nil?
 
-      user.id % 10 < percentage.to_i / 10
+      combined_hash(user.id, feature) % 100 < percentage.to_i
+    end
+
+    def combined_hash(*objects)
+      objects.inject(0) { |m,o| m + integer_hash(o) }
+    end
+
+    def integer_hash(obj)
+      Zlib.crc32 obj.to_s
     end
 end
